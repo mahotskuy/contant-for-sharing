@@ -1,16 +1,12 @@
-// ./containers/App.js
 import React from 'react';
 import { hot } from 'react-hot-loader';
- 
-function Welcome(props) {
-  return <h1>Hello, {props.name}</h1>;
-}
+
+import NotificationWidget from './components/notification-widget/NotificationWidget'
 
 function App() {
   return (
     <div>
-      <Welcome name="Sara" />
-      <Welcome name="Cahal" />
+      <NotificationWidget/>
     </div>
   );
 }

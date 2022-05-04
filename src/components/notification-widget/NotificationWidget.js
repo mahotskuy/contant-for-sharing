@@ -21,7 +21,12 @@ export default function NotificationWidget() {
     const [open, setOpen] = React.useState(false);
     const [badgeCount, setBadgeCount] = React.useState(0);
 
-    function handleSaveSiteResponse(value){
+    function handleSaveSiteResponse(value) {
+        if (value) {
+            navigator.serviceWorker.ready.then(sw => sw.active.postMessage({
+                action: 'enable-offline',
+            }));
+        }
         ls.set("SaveSite", {
             value: value,
             date: moment()
@@ -29,28 +34,29 @@ export default function NotificationWidget() {
         setOpen(false);
     }
 
-    function pushNotification(){
-        setBadgeCount(1);
+    function pushNotification() {
+        navigator.serviceWorker.ready.then(() => setBadgeCount(1));
     }
 
-    function shouldPushNotification(){
+    function shouldPushNotification() {
         const saveSiteData = ls.get("SaveSite");
         const passedTime = duration(moment() - moment(saveSiteData?.date)).days();
         const outOfTime = passedTime > 7;
-        return !saveSiteData || (!saveSiteData.value && outOfTime);
+        const serviceWorkerRegistered = 'serviceWorker' in navigator;
+        return (!saveSiteData || (!saveSiteData.value && outOfTime)) && serviceWorkerRegistered;
     }
     React.useEffect(
         () => {
-            if(!shouldPushNotification()) return;
+            if (!shouldPushNotification()) return;
 
-            const delaySeconds = 30;
+            const delaySeconds = 5;
             let timer = setTimeout(() => pushNotification(), delaySeconds * 1000);
-    
+
             // this will clear Timeout
             // when component unmount like in willComponentUnmount
             // and show will not change to true
             return () => {
-            clearTimeout(timer);
+                clearTimeout(timer);
             };
         },
         // useEffect will run only one time with empty []
@@ -59,7 +65,7 @@ export default function NotificationWidget() {
         // than clearTimeout will run every time
         // this value changes (useEffect re-run)
         []
-        );
+    );
 
     const handleClickOpen = () => {
         setBadgeCount(0);
@@ -72,17 +78,17 @@ export default function NotificationWidget() {
 
     return (
         <div>
-            { badgeCount > 0 &&
-            <IconButton
-                color="primary"
-                className='notification-widget fixed-icon'
-                component="span"
-                size='large'
-                onClick={handleClickOpen}>
-                <Badge badgeContent={badgeCount} color="secondary">
-                    <CircleNotificationsSharpIcon fontSize="large" />
-                </Badge>
-            </IconButton>
+            {badgeCount > 0 &&
+                <IconButton
+                    color="primary"
+                    className='notification-widget fixed-icon'
+                    component="span"
+                    size='large'
+                    onClick={handleClickOpen}>
+                    <Badge badgeContent={badgeCount} color="secondary">
+                        <CircleNotificationsSharpIcon fontSize="large" />
+                    </Badge>
+                </IconButton>
             }
             <Dialog
                 open={open}
@@ -100,8 +106,8 @@ export default function NotificationWidget() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={()=> handleSaveSiteResponse(false)}>Ні</Button>
-                    <Button onClick={()=> handleSaveSiteResponse(true)}>Так</Button>
+                    <Button onClick={() => handleSaveSiteResponse(false)}>Ні</Button>
+                    <Button onClick={() => handleSaveSiteResponse(true)}>Так</Button>
                 </DialogActions>
             </Dialog>
         </div>

@@ -209,11 +209,11 @@ module.exports = function (webpackEnv) {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? 'production/js/[name].[contenthash:8].js'
+        ? 'production/js/[name].js'
         : isEnvDevelopment && 'static/js/bundle.js',
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? 'production/js/[name].[contenthash:8].chunk.js'
+        ? 'production/js/[name].chunk.js'
         : isEnvDevelopment && 'static/js/[name].chunk.js',
       assetModuleFilename: isEnvProduction
       ? 'production/media/[name].[hash][ext]'
@@ -639,8 +639,8 @@ module.exports = function (webpackEnv) {
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
           // both options are optional
-          filename: isEnvProduction ? 'production/css/[name].[contenthash:8].css' : 'static/css/[name].[contenthash:8].css',
-          chunkFilename: isEnvProduction ? 'production/css/[name].[contenthash:8].chunk.css' : 'static/css/[name].[contenthash:8].chunk.css',
+          filename: isEnvProduction ? 'production/css/[name].css' : 'static/css/[name].[contenthash:8].css',
+          chunkFilename: isEnvProduction ? 'production/css/[name].chunk.css' : 'static/css/[name].[contenthash:8].chunk.css',
         }),
       // Generate an asset manifest file with the following content:
       // - "files" key: Mapping of all asset filenames to their corresponding

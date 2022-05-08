@@ -36,7 +36,9 @@ export default function OfflineWidgetPusher() {
     const getMessage = eventMessage => {
         switch (eventMessage.status) {
             case 'start':
-                return `Завантаження ${eventMessage.toDownload}Mb почалось`;
+                return `Завантаження почалось`;
+            case 'downloading':
+                return "Завантаження продовжується";
             case 'done':
                 return "Завантаження завершилось";
             default:
@@ -48,7 +50,7 @@ export default function OfflineWidgetPusher() {
         const broadcast = new BroadcastChannel('offline-download');
         broadcast.onmessage = (event) => {
             if(!getMessage(event.data)) return;
-            
+
             dispatch(pushSnackNotification(
                 {
                     message: getMessage(event.data),

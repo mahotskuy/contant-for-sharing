@@ -17,6 +17,8 @@ const IDB_SETTINGS_TABLE = 'settings'
 
 const OFFLINE_DATA_URL = '/offline-data.json'
 
+let downloadOfflineAbort = null
+
 const Console = {
     Log: function () {
         console.log('%c[SW]', 'color:#0043ce;font-weight: bold;', ...arguments)
@@ -66,7 +68,7 @@ const fetchAndCache = (evt, cache_name = SITE_CACHE) => {
     return fetch(evt.request).then(response => {
         if (
             response.ok
-            && !evt.request.url.startsWith(self.location.origin+'/_next/image')
+            && !evt.request.url.startsWith(self.location.origin + '/_next/image')
         ) {
             evt.waitUntil(caches.open(cache_name).then(cache => cache.put(evt.request, response.clone())))
         }
@@ -78,7 +80,7 @@ self.addEventListener('message', (event) => {
     Console.Debug('onMessage', event)
     if (event.data && event.data.action === 'enable-offline') {
         event.waitUntil(turnOnOffline())
-    } else if(event.data && event.data.action === 'continue-download') {
+    } else if (event.data && event.data.action === 'continue-download') {
         event.waitUntil(settings.get('enable-offline').then(v => v.value && downloadOffline(false)))
     } else if (event.data && event.data.action === 'disable-offline') {
         event.waitUntil(turnOffOffline())
@@ -113,6 +115,12 @@ async function downloadOffline(update) {
         return array
     }, []);
     files = [...new Set(files)]
+
+    if (downloadOfflineAbort) {
+        downloadOfflineAbort.abort()
+    }
+    downloadOfflineAbort = new AbortController()
+
     Console.Debug('Files from offline data: ', files)
 
     const cache = await caches.open(OFFLINE_CACHE)
@@ -125,17 +133,48 @@ async function downloadOffline(update) {
     }
     Console.Debug('Result map files: ', result)
     const broadcast = new BroadcastChannel('offline-download')
-    broadcast.postMessage({
-        status: 'start',
+    const status = {
+        downloaded: 0,
+        download_failed: 0,
+        deleted: 0,
         toDownload: result.toDownload.length,
         toDelete: result.toDelete.length,
+    }
+    broadcast.postMessage({
+        status: 'start',
+        data: status,
     })
-    return await Promise.all([
-        Promise.all(result.toDownload.map(f => cache.add(f))),
-        Promise.all(result.toDelete.map(f => cache.delete(f)))
-    ]).then(() => {
+    const infoBroadcast = setInterval(() => {
         broadcast.postMessage({
-            status: 'done'
+            status: 'downloading',
+            data: status
+        })
+    }, 1000);
+    return await Promise.allSettled([
+        Promise.allSettled(
+            result.toDownload.map(
+                f => new Request(f, {
+                    signal: downloadOfflineAbort.signal,
+                    cache: "no-store",
+                })
+            )
+                .map(
+                    f => cache.add(f)
+                        .then(() => status.downloaded++)
+                        .catch(() => status.download_failed++)
+                )
+        ).then(() => downloadOfflineAbort = null),
+        Promise.allSettled(
+            result.toDelete.map(
+                f => cache.delete(f)
+                    .then(() => status.deleted++)
+            )
+        )
+    ]).then(() => {
+        clearInterval(infoBroadcast)
+        broadcast.postMessage({
+            status: 'done',
+            data: status,
         })
     })
 }
@@ -149,6 +188,10 @@ function turnOnOffline() {
 }
 
 async function turnOffOffline() {
+    if(downloadOfflineAbort) {
+        downloadOfflineAbort.abort()
+        downloadOfflineAbort = null
+    }
     return Promise.all([
         settings.set('enable-offline', false),
         caches.delete(OFFLINE_CACHE)
@@ -170,14 +213,14 @@ self.addEventListener('fetch', evt => {
 
             if ((await settings.get('enable-offline') || {}).value)
                 return await fetchAndCache(evt, OFFLINE_CACHE).then(async (result) => {
-                    if(result) return result;
+                    if (result) return result;
                     if (!result && url.pathname === '/_next/image') {
                         let startUrl = new URL(url)
                         startUrl.searchParams.delete('w')
                         startUrl.searchParams.delete('q')
                         startUrl = startUrl.href
                         return await caches.open(OFFLINE_CACHE)
-                            .then(cache => cache.matchAll('/_next/image', { ignoreSearch: true }))
+                            .then(cache => cache.matchAll('/_next/image', {ignoreSearch: true}))
                             .then(files => files.find(f => f.url.startsWith(startUrl)))
                     }
                     return result
@@ -232,7 +275,7 @@ self.addEventListener('backgroundfetchsuccess', evt => {
 
             await Promise.all(promises);
 
-            evt.updateUI({title: 'Offline Ð’Ð·ÑÑ”Ð¼Ð¾Ð”Ñ–Ñ Ð³Ð¾Ñ‚Ð¾Ð²Ð°!'});
+            evt.updateUI({title: 'Offline ВзяємоДія готова!'});
             new BroadcastChannel(bgFetch.id).postMessage({stored: true});
         }())
     }

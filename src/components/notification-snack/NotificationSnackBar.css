@@ -1,0 +1,9 @@
+/* @media (max-width: 600px){
+    .MuiSnackbar-root.MuiSnackbar-anchorOriginBottomLeft.css-cpgvjg-MuiSnackbar-root {
+        right: 65px;
+     };
+} */
+
+.MuiSnackbar-root.MuiSnackbar-anchorOriginBottomLeft.css-cpgvjg-MuiSnackbar-root {
+    bottom: 45px;
+ };

@@ -78,6 +78,8 @@ self.addEventListener('message', (event) => {
     Console.Debug('onMessage', event)
     if (event.data && event.data.action === 'enable-offline') {
         event.waitUntil(turnOnOffline())
+    } else if(event.data && event.data.action === 'continue-download') {
+        event.waitUntil(settings.get('enable-offline').then(v => v.value && downloadOffline(false)))
     } else if (event.data && event.data.action === 'disable-offline') {
         event.waitUntil(turnOffOffline())
     }
@@ -122,16 +124,27 @@ async function downloadOffline(update) {
         toDelete: cachedFiles.filter(f => !files.includes(f)),
     }
     Console.Debug('Result map files: ', result)
+    const broadcast = new BroadcastChannel('offline-download')
+    broadcast.postMessage({
+        status: 'start',
+        toDownload: result.toDownload.length,
+        toDelete: result.toDelete.length,
+    })
     return await Promise.all([
         Promise.all(result.toDownload.map(f => cache.add(f))),
         Promise.all(result.toDelete.map(f => cache.delete(f)))
-    ])
+    ]).then(() => {
+        broadcast.postMessage({
+            status: 'done'
+        })
+    })
 }
 
 function turnOnOffline() {
     return Promise.all([
         settings.set('enable-offline', true),
-        downloadOffline(true)
+        downloadOffline(true),
+        self.clients.matchAll({type: 'window'}).then(tabs => tabs.forEach(tab => tab.navigate(tab.url)))
     ])
 }
 
@@ -197,7 +210,8 @@ self.addEventListener('activate', evt =>
                 })
             );
         }),
-        getDB()
+        getDB(),
+        self.clients.claim()
     ]))
 );
 

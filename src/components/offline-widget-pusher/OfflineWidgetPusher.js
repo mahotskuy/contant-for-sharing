@@ -47,6 +47,8 @@ export default function OfflineWidgetPusher() {
     React.useEffect(() => {
         const broadcast = new BroadcastChannel('offline-download');
         broadcast.onmessage = (event) => {
+            if(!getMessage(event.data)) return;
+            
             dispatch(pushSnackNotification(
                 {
                     message: getMessage(event.data),

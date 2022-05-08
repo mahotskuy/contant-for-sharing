@@ -14,7 +14,6 @@ export default function NotificationSnackbars() {
   const dispatch = useDispatch();
   const notifications = useSelector((state)=> state.snackBarNotification.notifications)
   const open = notifications.length > 0;
-  if(!open) return;
   
   const notification = notifications.slice(-1)[0];
 
@@ -27,10 +26,14 @@ export default function NotificationSnackbars() {
   };
   
   return (
+    <span>
+    { open === true &&
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={notification.severity} sx={{ width: '100%' }}>
           {notification.message}
         </Alert>
       </Snackbar>
+    }
+    </span>
   );
 }

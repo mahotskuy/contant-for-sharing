@@ -2,7 +2,13 @@
     margin: 0px;
     top: auto;
     right: 10px;
-    bottom: 40px;
+    bottom: 10px;
     left: auto;
     position: fixed;
 }
+
+@media screen and (max-width: 980px) {
+    .notification-widget.fixed-icon {
+        bottom: 40px;
+    }
+  }

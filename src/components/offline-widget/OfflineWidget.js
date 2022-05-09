@@ -27,9 +27,9 @@ export default function OfflineWidget() {
                     color="success"
                     className='offline-widget fixed-icon'
                     component="span"
-                    size='large'
                     onClick={handleClick}>
-                    <OfflinePinIcon fontSize="large" />
+                    <OfflinePinIcon 
+                    sx={{ fontSize: 40 }} />
                 </IconButton>
             }
         </div>

@@ -26,10 +26,10 @@ export default function NotificationWidget() {
                     color="primary"
                     className='notification-widget fixed-icon'
                     component="span"
-                    size='large'
                     onClick={handleClickOpen}>
                     <Badge badgeContent={notificationsCount} color="secondary">
-                        <CircleNotificationsSharpIcon fontSize="large" />
+                        <CircleNotificationsSharpIcon
+                            sx={{ fontSize: 40 }} />
                     </Badge>
                 </IconButton>
             }

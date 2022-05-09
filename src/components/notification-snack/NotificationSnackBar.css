@@ -1,3 +1,9 @@
 .MuiSnackbar-root.MuiSnackbar-anchorOriginBottomLeft {
-    bottom: 52px;
+    bottom: 10px;
  }
+
+ @media screen and (max-width: 980px) {
+    .MuiSnackbar-root.MuiSnackbar-anchorOriginBottomLeft {
+        bottom: 52px;
+     }
+  }

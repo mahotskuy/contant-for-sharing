@@ -17,9 +17,9 @@ export default function OfflineWidget() {
             show: true
         }));
     }
-
+    const isComponentLoading = useSelector((state) => state.settings.offlineLoading);
     const saveSiteData = useSelector((state) => state.settings.saveSiteData);
-    const isVisibable = saveSiteData?.value ?? false;
+    const isVisibable = (saveSiteData?.value ?? false) && !isComponentLoading;
     return (
         <div>
             {isVisibable === true &&

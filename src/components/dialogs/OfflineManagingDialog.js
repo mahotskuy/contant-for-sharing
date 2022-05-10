@@ -7,7 +7,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
-
 import * as constants from '../../app/constantas'
 
 import { setDialog } from '../../features/dialogs/dialogs-slice'

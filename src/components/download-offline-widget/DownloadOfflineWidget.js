@@ -11,7 +11,7 @@ import * as constants from '../../app/constantas';
 export default function DownloadOfflineWidget() {
     const dispatch = useDispatch();
     const isComponentLoading = useSelector((state) => state.settings.offlineLoading);
-    const isVisibable = !useSelector((state) => state.settings.saveSiteData)?.value && !isComponentLoading;
+    const isVisibable = !useSelector((state) => state.settings.saveSiteData)?.value || isComponentLoading;
 
     const handleClickOpen = () => {
         dispatch(setDialog({

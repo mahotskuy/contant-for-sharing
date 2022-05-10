@@ -3,7 +3,7 @@ import moment, { duration } from 'moment';
 
 import { useDispatch, useSelector } from 'react-redux'
 import { pushNotification } from '../../features/notification/notification-slice';
-import { pushNotification as pushSnackNotification } from '../../features/notification/snack-notification-slice';
+import { setOfflineLoading } from '../../features/settings/app-settings-slice'
 
 export default function OfflineWidgetPusher() {
     const dispatch = useDispatch();
@@ -33,29 +33,22 @@ export default function OfflineWidgetPusher() {
         }
     );
 
-    const getMessage = eventMessage => {
-        switch (eventMessage.status) {
-            case 'start':
-                return `Завантаження почалось`;
-            case 'downloading':
-                return "Завантаження продовжується";
-            case 'done':
-                return "Завантаження завершилось";
-            default:
-                break;
-        }
-    }
-
     React.useEffect(() => {
         const broadcast = new BroadcastChannel('offline-download');
         broadcast.onmessage = (event) => {
-            if(!getMessage(event.data)) return;
-
-            dispatch(pushSnackNotification(
-                {
-                    message: getMessage(event.data),
-                    severity: 'info'
-                }));
+            switch (event.data.status) {
+                case 'start':
+                    dispatch(setOfflineLoading(true));
+                    break;
+                case 'downloading':
+                    dispatch(setOfflineLoading(true));
+                    break;
+                case 'done':
+                    dispatch(setOfflineLoading(false));
+                    break;
+                default:
+                    break;
+            }
         };
 
         return () => {

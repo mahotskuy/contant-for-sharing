@@ -4,7 +4,7 @@ import { hot } from 'react-hot-loader';
 import { Provider } from 'react-redux'
 import store from './app/store'
 
-import NotificationWidget from './components/notification-widget/NotificationWidget'
+import DownloadOfflineWidget from './components/download-offline-widget/DownloadOfflineWidget'
 import OfflineWidgetPusher from './components/offline-widget-pusher/OfflineWidgetPusher'
 import OfflineNotificationDialog from './components/dialogs/OfflineNotificationDialog'
 import OfflineManagingDialog from './components/dialogs/OfflineManagingDialog';
@@ -14,7 +14,7 @@ import OfflineWidget from './components/offline-widget/OfflineWidget';
 function App() {
   return (
     <Provider store={store}>
-      <NotificationWidget/>
+      <DownloadOfflineWidget/>
       <OfflineWidget/>
       <NotificationSnackbars/>
       <OfflineNotificationDialog/>

@@ -6,7 +6,8 @@ import moment from 'moment';
 export const appSettingsSline = createSlice({
   name: 'app-settings',
   initialState: {
-    saveSiteData: ls.get(constants.SAVE_SITE)
+    saveSiteData: ls.get(constants.SAVE_SITE),
+    offlineLoading: false
   },
   reducers: {
     setSaveSite: (state, value) => {
@@ -16,11 +17,14 @@ export const appSettingsSline = createSlice({
       }
       ls.set(constants.SAVE_SITE, model);
       state.saveSiteData = model;
+    },
+    setOfflineLoading: (state, value) => {
+      state.offlineLoading = value.payload;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setSaveSite } = appSettingsSline.actions
+export const { setSaveSite, setOfflineLoading } = appSettingsSline.actions
 
 export default appSettingsSline.reducer

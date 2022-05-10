@@ -12,7 +12,7 @@ import * as constants from '../../app/constantas'
 
 import { setDialog } from '../../features/dialogs/dialogs-slice'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSaveSite } from '../../features/settings/app-settings-slice'
+import { setSaveSite, setOfflineLoading } from '../../features/settings/app-settings-slice'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -30,7 +30,6 @@ export default function OfflineManagingDialog() {
         dispatch(setSaveSite({
             value: false
         }));
-        handleClose();
     }
 
     const handleClose = () => {

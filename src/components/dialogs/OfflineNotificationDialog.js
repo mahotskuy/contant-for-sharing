@@ -10,8 +10,7 @@ import Slide from '@mui/material/Slide';
 import { useSelector, useDispatch } from 'react-redux'
 import { dialogs } from '../../app/constantas';
 import { setDialog } from '../../features/dialogs/dialogs-slice'
-import { popNotification } from '../../features/notification/notification-slice'
-import { setSaveSite } from '../../features/settings/app-settings-slice'
+import { setSaveSite, setOfflineLoading } from '../../features/settings/app-settings-slice'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -29,11 +28,11 @@ export default function OfflineNotificationDialog() {
         }
 
         dispatch(setSaveSite(value));
+        dispatch(setOfflineLoading(true));
         dispatch(setDialog({
             dialogName: dialogs.OFFLINE_NOTIFICATION,
             show: false
         }));
-        dispatch(popNotification());
     }
 
     const handleClose = () => {
@@ -60,7 +59,7 @@ export default function OfflineNotificationDialog() {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => handleSaveSiteResponse(false)}>Ні</Button>
+                <Button onClick={handleClose}>Закрити</Button>
                 <Button onClick={() => handleSaveSiteResponse(true)}>Так</Button>
             </DialogActions>
         </Dialog>

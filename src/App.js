@@ -10,6 +10,7 @@ import OfflineNotificationDialog from './components/dialogs/OfflineNotificationD
 import OfflineManagingDialog from './components/dialogs/OfflineManagingDialog';
 import NotificationSnackbars from './components/notification-snack/NotificationSnackBar'
 import OfflineWidget from './components/offline-widget/OfflineWidget';
+import DownloadSpinnerWidget from './components/spinner-widget/DownloadSpinnerWidget';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <OfflineNotificationDialog/>
       <OfflineManagingDialog/>
       <OfflineWidgetPusher/>
+      <DownloadSpinnerWidget/>
       </Provider>
   );
 }

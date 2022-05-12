@@ -1,7 +1,6 @@
 import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
-import CircularProgress from '@mui/material/CircularProgress';
 import './DownloadOfflineWidget.css';
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -10,8 +9,13 @@ import * as constants from '../../app/constantas';
 
 export default function DownloadOfflineWidget() {
     const dispatch = useDispatch();
-    const isComponentLoading = useSelector((state) => state.settings.offlineLoading);
-    const isVisibable = !useSelector((state) => state.settings.saveSiteData)?.value || isComponentLoading;
+    const [serviceWorkerRegistered, setServiceWorkerRegistered] = React.useState(false);
+    const isSiteSaved = !useSelector((state) => state.settings.saveSiteData)?.value;
+
+    const isVisibable = isSiteSaved && serviceWorkerRegistered;
+    if(!serviceWorkerRegistered){
+        navigator.serviceWorker.ready.then(() => setServiceWorkerRegistered(true));
+    }
 
     const handleClickOpen = () => {
         dispatch(setDialog({
@@ -31,7 +35,6 @@ export default function DownloadOfflineWidget() {
                         sx={{ fontSize: 40 }} />
                 </IconButton>
             }
-            {isComponentLoading && <CircularProgress className='download-offline-widget-loading fixed-icon'/>}
         </div>
     );
 }

@@ -1,7 +1,7 @@
-.download-offline-widget.fixed-icon {
+.download-spinner.fixed-icon{
+    top: 58px;
+    right: 8px;
     margin: 0px;
-    top: 50px;
-    right: 0px;
     bottom: auto;
     left: auto;
     position: fixed;

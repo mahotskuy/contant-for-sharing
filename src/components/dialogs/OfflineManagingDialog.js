@@ -26,9 +26,8 @@ export default function OfflineManagingDialog() {
             action: 'disable-offline',
         }));
         
-        dispatch(setSaveSite({
-            value: false
-        }));
+        dispatch(setSaveSite(false));
+        handleClose();
     }
 
     const handleClose = () => {

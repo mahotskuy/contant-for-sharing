@@ -11,6 +11,7 @@ import OfflineManagingDialog from './components/dialogs/OfflineManagingDialog';
 import NotificationSnackbars from './components/notification-snack/NotificationSnackBar'
 import OfflineWidget from './components/offline-widget/OfflineWidget';
 import DownloadSpinnerWidget from './components/spinner-widget/DownloadSpinnerWidget';
+import {DisableLint} from './components/strange-code/search-handler'; // subscribed to search box
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <OfflineManagingDialog/>
       <OfflineWidgetPusher/>
       <DownloadSpinnerWidget/>
+      <DisableLint/>
       </Provider>
   );
 }

@@ -4,7 +4,7 @@ import * as React from 'react';
 $(".super-navbar__button.super-navbar__search").one("click", () => {
     setTimeout(function () {
         var typingTimer;                //timer identifier
-        var doneTypingInterval = 800;  //time in ms, 5 seconds for example
+        var doneTypingInterval = 1000;  //time in ms, 5 seconds for example
         var $input = $('.notion-search__input input');
 
         //on keyup, start the countdown
@@ -24,7 +24,8 @@ $(".super-navbar__button.super-navbar__search").one("click", () => {
                 type: "POST",
                 url: "https://main--preeminent-donut-6cb31b.netlify.app/.netlify/functions/api/super-search",
                 data: {
-                    "text": $input.val()
+                    "text": $input.val(),
+                    "spreadsheetId": "1RSH0TdJa7AicL_LDUl0uoN4Pxdf6XAblpYKkDXmR5HY"
                 },
                 dataType: "json"
             });
